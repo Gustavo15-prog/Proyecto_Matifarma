@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+
+<!-- Cabecera común: meta, CSRF, Bootstrap 5.3.3, iconos, tipografía y estilos globales -->
+<th:block th:fragment="head(titulo)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="_csrf" th:content="${_csrf.token}">
+  <meta name="_csrf_header" th:content="${_csrf.headerName}">
+  <title th:text="${titulo} + ' | Botica Matifarma'">Botica Matifarma</title>
+  <link rel="icon" type="image/svg+xml" th:href="@{/img/logo.svg}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/global.css}">
+</th:block>
+
+<!-- Menú lateral. Parámetro: clave de la opción activa. Las opciones se filtran por rol. -->
+<th:block th:fragment="sidebar(activa)">
+  <aside class="sidebar" id="sidebar" aria-label="Menú principal">
+    <div class="sidebar-brand">
+      <img class="brand-logo" th:src="@{/img/logo.svg}" alt="Logotipo de Botica Matifarma">
+      <div class="brand-text">Botica Matifarma<small>Control de inventario</small></div>
+      <button type="button" class="btn-collapse" id="btnColapsar" aria-label="Contraer menú"><i class="bi bi-chevron-double-left"></i></button>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-item" th:href="@{/dashboard}" title="Dashboard" th:classappend="${activa == 'dashboard'} ? 'active'">
+        <i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
+      <a class="nav-item" sec:authorize="hasRole('ADMINISTRADOR')" th:href="@{/productos}" title="Productos" th:classappend="${activa == 'productos'} ? 'active'">
+        <i class="bi bi-capsule"></i><span>Productos</span></a>
+      <a class="nav-item" sec:authorize="hasAnyRole('ADMINISTRADOR','ALMACENERO')" th:href="@{/inventario}" title="Inventario" th:classappend="${activa == 'inventario'} ? 'active'">
+        <i class="bi bi-boxes"></i><span>Inventario</span></a>
+      <a class="nav-item" sec:authorize="hasAnyRole('ADMINISTRADOR','VENDEDOR')" th:href="@{/ventas}" title="Ventas" th:classappend="${activa == 'ventas'} ? 'active'">
+        <i class="bi bi-cart-check"></i><span>Ventas</span></a>
+      <a class="nav-item" th:href="@{/consultar-stock}" title="Consultar stock" th:classappend="${activa == 'consultar-stock'} ? 'active'">
+        <i class="bi bi-search"></i><span>Consultar stock</span></a>
+      <a class="nav-item" sec:authorize="hasRole('ADMINISTRADOR')" th:href="@{/alertas}" title="Alertas" th:classappend="${activa == 'alertas'} ? 'active'">
+        <i class="bi bi-bell"></i><span>Alertas</span></a>
+      <a class="nav-item" sec:authorize="hasRole('ADMINISTRADOR')" th:href="@{/proveedores}" title="Proveedores" th:classappend="${activa == 'proveedores'} ? 'active'">
+        <i class="bi bi-truck"></i><span>Proveedores</span></a>
+      <a class="nav-item" sec:authorize="hasRole('ADMINISTRADOR')" th:href="@{/reportes}" title="Reportes" th:classappend="${activa == 'reportes'} ? 'active'">
+        <i class="bi bi-bar-chart-line"></i><span>Reportes</span></a>
+      <a class="nav-item" sec:authorize="hasRole('ADMINISTRADOR')" th:href="@{/usuarios}" title="Usuarios" th:classappend="${activa == 'usuarios'} ? 'active'">
+        <i class="bi bi-people"></i><span>Usuarios</span></a>
+    </nav>
+    <form class="sidebar-footer" th:action="@{/logout}" method="post">
+      <button type="submit" class="nav-item nav-logout" title="Cerrar sesión"><i class="bi bi-box-arrow-left"></i><span>Cerrar sesión</span></button>
+    </form>
+  </aside>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+</th:block>
+
+<!-- Barra superior con el usuario autenticado -->
+<header class="topbar" th:fragment="topbar(titulo)">
+  <button type="button" class="btn-menu-movil" id="btnMenuMovil" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+  <h1 class="topbar-title" th:text="${titulo}">Título</h1>
+  <div class="topbar-user">
+    <div class="avatar" aria-hidden="true" th:text="${#strings.toUpperCase(#strings.substring(#authentication.principal.nombres, 0, 1))}">A</div>
+    <div class="topbar-user-info">
+      <strong th:text="${#authentication.principal.nombres}">Usuario</strong>
+      <small th:text="${#strings.capitalize(#strings.toLowerCase(#authentication.principal.rol))}">Rol</small>
+    </div>
+  </div>
+</header>
+
+<!-- Scripts comunes a todas las páginas autenticadas -->
+<th:block th:fragment="scriptsBase">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script th:src="@{/js/api.js}"></script>
+  <script th:src="@{/js/notificaciones.js}"></script>
+  <script th:src="@{/js/sidebar.js}"></script>
+</th:block>
+
+</body>
+</html>

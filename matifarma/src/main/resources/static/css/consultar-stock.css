@@ -1,0 +1,4 @@
+.stock-num { font-weight: 800; font-size: 1.05rem; }
+.stock-num.bajo { color: var(--mf-warn); }
+.stock-num.cero { color: var(--mf-red); }
+.precio-venta { font-weight: 800; color: var(--mf-purple-800); }

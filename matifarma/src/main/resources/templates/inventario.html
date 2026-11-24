@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <th:block th:replace="~{fragments/layout :: head('Inventario')}"></th:block>
+  <link rel="stylesheet" th:href="@{/css/inventario.css}">
+</head>
+<body>
+<div class="app-shell">
+  <th:block th:replace="~{fragments/layout :: sidebar('inventario')}"></th:block>
+  <div class="app-main">
+    <header th:replace="~{fragments/layout :: topbar('Inventario')}"></header>
+    <main class="app-content">
+      <ul class="nav nav-tabs mb-3" id="tabsInv" role="tablist">
+        <li class="nav-item" role="presentation"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tabStock" type="button" role="tab"><i class="bi bi-boxes me-1"></i>Stock actual</button></li>
+        <li class="nav-item" role="presentation"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabIngreso" type="button" role="tab"><i class="bi bi-box-arrow-in-down me-1"></i>Registrar ingreso</button></li>
+        <li class="nav-item" role="presentation"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabSalida" type="button" role="tab"><i class="bi bi-box-arrow-up me-1"></i>Registrar salida</button></li>
+        <li class="nav-item" role="presentation"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabMov" type="button" role="tab"><i class="bi bi-clock-history me-1"></i>Movimientos</button></li>
+      </ul>
+
+      <div class="tab-content">
+        <!-- Stock actual -->
+        <div class="tab-pane fade show active" id="tabStock" role="tabpanel">
+          <div class="panel panel-flush">
+            <div class="toolbar">
+              <div class="search"><i class="bi bi-search"></i><input type="search" id="txtStock" class="form-control" placeholder="Buscar por nombre o código…" maxlength="60" aria-label="Buscar en inventario"></div>
+              <span class="ms-auto text-muted small" id="contStock"></span>
+            </div>
+            <div class="table-responsive"><table class="table table-mf">
+              <thead><tr><th>Código</th><th>Producto</th><th>Categoría</th><th class="num">Stock</th><th class="num">Mínimo</th><th>Ubicación</th><th>Vence</th><th>Estado</th></tr></thead>
+              <tbody id="tbStock"><tr><td colspan="8" class="vacio">Cargando…</td></tr></tbody></table></div>
+          </div>
+        </div>
+
+        <!-- Registrar ingreso -->
+        <div class="tab-pane fade" id="tabIngreso" role="tabpanel">
+          <div class="row g-3">
+            <div class="col-xl-8">
+              <div class="panel mb-3">
+                <h2 class="panel-title">Datos del ingreso</h2>
+                <form id="formIngresoCab" novalidate autocomplete="off"><div class="row g-3">
+                  <div class="col-md-6"><label for="idProveedor" class="form-label req">Proveedor</label><select class="form-select" id="idProveedor" name="idProveedor"><option value="">Seleccione…</option></select></div>
+                  <div class="col-md-6"><label for="numeroDocumento" class="form-label req">N.º de guía o factura</label><input class="form-control text-uppercase" id="numeroDocumento" name="numeroDocumento" maxlength="30" placeholder="Ej.: F001-004582"></div>
+                </div></form>
+              </div>
+              <div class="panel">
+                <h2 class="panel-title">Productos recibidos</h2>
+                <div class="buscador mb-3"><i class="bi bi-search"></i>
+                  <input type="search" class="form-control" id="buscarIngreso" placeholder="Escriba al menos 2 letras del producto o su código…" maxlength="60" autocomplete="off" aria-label="Buscar producto a ingresar">
+                  <div class="resultados-busqueda" id="listaIngreso" role="listbox" hidden></div></div>
+                <div class="table-responsive"><table class="table table-mf">
+                  <thead><tr><th>Producto</th><th style="width:120px">Cantidad</th><th style="width:140px">Costo unit. (S/)</th><th style="width:170px">Vencimiento</th><th class="num">Subtotal</th><th></th></tr></thead>
+                  <tbody id="tbIngreso"></tbody></table></div>
+              </div>
+            </div>
+            <div class="col-xl-4"><div class="panel resumen-sticky">
+              <h2 class="panel-title">Resumen</h2>
+              <div class="d-flex justify-content-between mb-1"><span class="text-muted">Productos</span><strong id="resLineas">0</strong></div>
+              <div class="d-flex justify-content-between mb-3"><span class="text-muted">Unidades</span><strong id="resUnidades">0</strong></div>
+              <div class="d-flex justify-content-between align-items-baseline border-top pt-3 mb-3"><span class="fw-bold">Total compra</span><strong class="fs-4 text-danger" id="resTotal">S/ 0.00</strong></div>
+              <p class="small text-muted"><i class="bi bi-info-circle me-1"></i>Los productos vencidos o en mal estado no se suman al stock y quedan marcados como no conformes.</p>
+              <button type="button" class="btn btn-accent w-100 btn-lg" id="btnRegistrarIngreso"><i class="bi bi-check2-circle me-1"></i>Registrar ingreso</button>
+            </div></div>
+          </div>
+        </div>
+
+        <!-- Registrar salida -->
+        <div class="tab-pane fade" id="tabSalida" role="tabpanel">
+          <div class="panel" style="max-width:760px">
+            <h2 class="panel-title">Salida manual de inventario</h2>
+            <p class="text-muted small">Use esta opción para mermas, productos dañados o ajustes. Las ventas descuentan stock automáticamente.</p>
+            <div class="buscador mb-3"><i class="bi bi-search"></i>
+              <input type="search" class="form-control" id="buscarSalida" placeholder="Buscar producto…" maxlength="60" autocomplete="off" aria-label="Buscar producto para salida">
+              <div class="resultados-busqueda" id="listaSalida" role="listbox" hidden></div></div>
+            <div class="seleccionado mb-3" id="selSalida" hidden></div>
+            <form id="formSalida" novalidate autocomplete="off"><div class="row g-3">
+              <input type="hidden" name="idProducto" id="idProductoSalida">
+              <div class="col-md-4"><label for="cantidadSalida" class="form-label req">Cantidad</label><input class="form-control" type="number" min="1" step="1" id="cantidadSalida" name="cantidad"></div>
+              <div class="col-md-8"><label for="motivoSalida" class="form-label req">Motivo</label>
+                <select class="form-select" id="motivoSalida" name="motivo"><option value="">Seleccione…</option><option>Merma</option><option>Producto dañado</option><option>Producto vencido</option><option>Ajuste de inventario</option><option>Uso interno</option><option>Otro</option></select></div>
+              <div class="col-12"><label for="detalleSalida" class="form-label">Detalle (opcional)</label><input class="form-control" id="detalleSalida" name="detalle" maxlength="70"></div>
+            </div></form>
+            <div class="mt-3 text-end"><button type="button" class="btn btn-accent" id="btnRegistrarSalida"><i class="bi bi-box-arrow-up me-1"></i>Registrar salida</button></div>
+          </div>
+        </div>
+
+        <!-- Movimientos -->
+        <div class="tab-pane fade" id="tabMov" role="tabpanel">
+          <div class="panel panel-flush">
+            <div class="toolbar">
+              <div class="search"><i class="bi bi-search"></i><input type="search" id="txtMov" class="form-control" placeholder="Filtrar por producto o código…" maxlength="60" aria-label="Filtrar movimientos"></div>
+              <span class="ms-auto text-muted small">Últimos 200 movimientos</span>
+            </div>
+            <div class="table-responsive"><table class="table table-mf">
+              <thead><tr><th>Fecha</th><th>Producto</th><th>Tipo</th><th class="num">Cantidad</th><th class="num">Stock resultante</th><th>Motivo</th><th>Referencia</th><th>Usuario</th></tr></thead>
+              <tbody id="tbMov"><tr><td colspan="8" class="vacio">Cargando…</td></tr></tbody></table></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+<th:block th:replace="~{fragments/layout :: scriptsBase}"></th:block>
+<script th:src="@{/js/validaciones.js}"></script>
+<script th:src="@{/js/modal.js}"></script>
+<script th:src="@{/js/buscador-productos.js}"></script>
+<script th:src="@{/js/inventario.js}"></script>
+</body>
+</html>

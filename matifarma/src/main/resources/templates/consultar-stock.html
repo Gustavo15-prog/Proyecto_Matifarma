@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <th:block th:replace="~{fragments/layout :: head('Consultar stock')}"></th:block>
+  <link rel="stylesheet" th:href="@{/css/consultar-stock.css}">
+</head>
+<body>
+<div class="app-shell">
+  <th:block th:replace="~{fragments/layout :: sidebar('consultar-stock')}"></th:block>
+  <div class="app-main">
+    <header th:replace="~{fragments/layout :: topbar('Consultar stock')}"></header>
+    <main class="app-content">
+      <div class="page-head"><p>Consulte disponibilidad, precio y vencimiento de cualquier producto.</p></div>
+      <div class="panel panel-flush">
+        <div class="toolbar">
+          <div class="search"><i class="bi bi-search"></i>
+            <input type="search" id="txtBuscar" class="form-control" placeholder="Buscar por nombre o código…" maxlength="60" aria-label="Buscar producto" autofocus></div>
+          <select id="selCategoria" class="form-select w-auto" aria-label="Filtrar por categoría"><option value="">Todas las categorías</option></select>
+          <select id="selEstado" class="form-select w-auto" aria-label="Filtrar por estado">
+            <option value="">Todos los estados</option><option>Normal</option><option>Stock bajo</option><option>Por vencer</option><option>Agotado</option><option>Vencido</option>
+          </select>
+          <span class="ms-auto text-muted small" id="contador"></span>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-mf">
+            <thead><tr><th>Código</th><th>Producto</th><th>Categoría</th><th class="num">Stock</th><th class="num">Precio</th><th>Vence</th><th>Ubicación</th><th>Estado</th></tr></thead>
+            <tbody id="tbody"><tr><td colspan="8" class="vacio">Cargando…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+<th:block th:replace="~{fragments/layout :: scriptsBase}"></th:block>
+<script th:src="@{/js/consultar-stock.js}"></script>
+</body>
+</html>

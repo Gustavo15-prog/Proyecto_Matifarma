@@ -1,0 +1,7 @@
+.resumen-sticky { position: sticky; top: 84px; }
+.seleccionado { display: flex; justify-content: space-between; align-items: center; gap: 1rem; background: var(--mf-purple-50); border: 1px dashed var(--mf-purple-200); border-radius: 12px; padding: .8rem 1rem; }
+.seleccionado small { display: block; color: var(--mf-muted); }
+#tbIngreso input { min-width: 0; }
+#tbIngreso .venc-aviso { display: block; font-size: .72rem; font-weight: 700; color: var(--mf-red-dark); margin-top: .2rem; }
+.tipo-entrada { background: var(--mf-ok-bg); color: var(--mf-ok); }
+.tipo-salida { background: var(--mf-red-50); color: var(--mf-red-dark); }

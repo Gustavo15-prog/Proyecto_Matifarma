@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <th:block th:replace="~{fragments/layout :: head('Dashboard')}"></th:block>
+  <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+<div class="app-shell">
+  <th:block th:replace="~{fragments/layout :: sidebar('dashboard')}"></th:block>
+  <div class="app-main">
+    <header th:replace="~{fragments/layout :: topbar('Dashboard')}"></header>
+    <main class="app-content">
+      <div class="page-head"><p>Resumen del estado de la botica al día de hoy.</p></div>
+
+      <div class="row g-3 mb-3" id="tarjetas">
+        <div class="col-6 col-xl-3"><div class="stat"><span class="stat-ico"><i class="bi bi-capsule"></i></span><div><small>Productos activos</small><strong id="stTotal">–</strong></div></div></div>
+        <div class="col-6 col-xl-3"><a th:href="${#authorization.expression('hasRole(''ADMINISTRADOR'')')} ? @{/alertas} : null" class="stat stat-warn"><span class="stat-ico"><i class="bi bi-arrow-down-circle"></i></span><div><small>Stock bajo</small><strong id="stBajo">–</strong></div></a></div>
+        <div class="col-6 col-xl-3"><a th:href="${#authorization.expression('hasRole(''ADMINISTRADOR'')')} ? @{/alertas} : null" class="stat stat-warn"><span class="stat-ico"><i class="bi bi-hourglass-split"></i></span><div><small>Por vencer</small><strong id="stPorVencer">–</strong></div></a></div>
+        <div class="col-6 col-xl-3"><a th:href="${#authorization.expression('hasRole(''ADMINISTRADOR'')')} ? @{/alertas} : null" class="stat stat-danger"><span class="stat-ico"><i class="bi bi-calendar-x"></i></span><div><small>Vencidos con stock</small><strong id="stVencidos">–</strong></div></a></div>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-lg-7" id="colVentas">
+          <div class="panel h-100">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <h2 class="panel-title mb-0">Ventas de los últimos 7 días</h2>
+              <div class="text-end"><small class="text-muted d-block">Hoy (<span id="vtCantidad">0</span> ventas)</small><strong class="fs-5 text-danger" id="vtHoy">S/ 0.00</strong></div>
+            </div>
+            <div class="barras" id="barras" role="img" aria-label="Gráfico de ventas de los últimos 7 días"></div>
+            <p class="text-muted small mt-3 mb-0">Total del mes: <strong id="vtMes">S/ 0.00</strong></p>
+          </div>
+        </div>
+        <div class="col-lg-5" id="colAlertas">
+          <div class="panel h-100">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h2 class="panel-title mb-0">Alertas recientes</h2>
+              <a class="small fw-bold" sec:authorize="hasRole('ADMINISTRADOR')" href="/alertas">Ver todas</a>
+            </div>
+            <ul class="lista-alertas" id="listaAlertas"></ul>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+<th:block th:replace="~{fragments/layout :: scriptsBase}"></th:block>
+<script th:src="@{/js/dashboard.js}"></script>
+</body>
+</html>

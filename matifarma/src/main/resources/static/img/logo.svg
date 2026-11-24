@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="Botica Matifarma">
+  <rect width="48" height="48" rx="12" fill="#ffffff"/>
+  <path d="M19 9h10v10h10v10H29v10H19V29H9V19h10z" fill="#5b2a8c"/>
+  <circle cx="31" cy="31" r="6.5" fill="#d7263d"/>
+</svg>

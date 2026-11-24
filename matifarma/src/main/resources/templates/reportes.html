@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <th:block th:replace="~{fragments/layout :: head('Reportes')}"></th:block>
+  <link rel="stylesheet" th:href="@{/css/reportes.css}">
+</head>
+<body>
+<div class="app-shell">
+  <th:block th:replace="~{fragments/layout :: sidebar('reportes')}"></th:block>
+  <div class="app-main">
+    <header th:replace="~{fragments/layout :: topbar('Reportes')}"></header>
+    <main class="app-content">
+      <div class="panel mb-3 no-print">
+        <form id="formReporte" novalidate autocomplete="off">
+          <div class="row g-3 align-items-end">
+            <div class="col-md-4"><label for="tipo" class="form-label req">Tipo de reporte</label>
+              <select class="form-select" id="tipo" name="tipo">
+                <option value="">Seleccione…</option><option value="stock">Stock actual</option><option value="ventas">Ventas por período</option><option value="movimientos">Movimientos de inventario</option>
+              </select></div>
+            <div class="col-6 col-md-2 campo-fecha"><label for="desde" class="form-label req">Desde</label><input class="form-control" type="date" id="desde" name="desde"></div>
+            <div class="col-6 col-md-2 campo-fecha"><label for="hasta" class="form-label req">Hasta</label><input class="form-control" type="date" id="hasta" name="hasta"></div>
+            <div class="col-md-4 d-flex gap-2">
+              <button type="button" class="btn btn-accent flex-fill" id="btnGenerar"><i class="bi bi-file-earmark-bar-graph me-1"></i>Generar</button>
+              <button type="button" class="btn btn-outline-primary" id="btnCsv" disabled title="Exportar a CSV" aria-label="Exportar a CSV"><i class="bi bi-filetype-csv"></i></button>
+              <button type="button" class="btn btn-outline-primary" id="btnImprimir" disabled title="Imprimir" aria-label="Imprimir"><i class="bi bi-printer"></i></button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div id="resultado" hidden>
+        <div class="d-flex flex-wrap align-items-baseline justify-content-between mb-2">
+          <h2 class="h5 fw-bold mb-0" id="tituloReporte"></h2><small class="text-muted" id="subtituloReporte"></small>
+        </div>
+        <div class="row g-3 mb-3" id="resumen"></div>
+        <div class="panel panel-flush"><div class="table-responsive"><table class="table table-mf"><thead id="thead"></thead><tbody id="tbody"></tbody></table></div></div>
+      </div>
+      <div class="panel vacio" id="inicial"><i class="bi bi-bar-chart-line"></i>Elija el tipo de reporte y pulse <strong>Generar</strong>.</div>
+    </main>
+  </div>
+</div>
+<th:block th:replace="~{fragments/layout :: scriptsBase}"></th:block>
+<script th:src="@{/js/validaciones.js}"></script>
+<script th:src="@{/js/reportes.js}"></script>
+</body>
+</html>

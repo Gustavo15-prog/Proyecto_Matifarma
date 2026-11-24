@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <th:block th:replace="~{fragments/layout :: head('Usuarios')}"></th:block>
+  <link rel="stylesheet" th:href="@{/css/usuarios.css}">
+</head>
+<body>
+<div class="app-shell">
+  <th:block th:replace="~{fragments/layout :: sidebar('usuarios')}"></th:block>
+  <div class="app-main">
+    <header th:replace="~{fragments/layout :: topbar('Usuarios')}"></header>
+    <main class="app-content">
+      <div class="page-head">
+        <p>Gestione el personal con acceso al sistema y sus roles: Administrador, Vendedor y Almacenero.</p>
+        <button type="button" class="btn btn-accent" id="btnNuevo"><i class="bi bi-person-plus me-1"></i>Nuevo usuario</button>
+      </div>
+      <div class="panel panel-flush">
+        <div class="table-responsive">
+          <table class="table table-mf">
+            <thead><tr><th>Usuario</th><th>Nombres</th><th>Correo</th><th>Rol</th><th>Estado</th><th class="text-end">Acciones</th></tr></thead>
+            <tbody id="tbody"><tr><td colspan="6" class="vacio">Cargando…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div class="modal fade" id="modalUsuario" tabindex="-1" aria-labelledby="tituloUsuario" aria-hidden="true">
+  <div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header"><h2 class="modal-title" id="tituloUsuario">Nuevo usuario</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div>
+    <div class="modal-body">
+      <form id="formUsuario" novalidate autocomplete="off"><div class="row g-3">
+        <div class="col-md-6"><label for="usuario" class="form-label req">Usuario</label><input class="form-control" id="usuario" name="usuario" maxlength="30" autocomplete="off"></div>
+        <div class="col-md-6"><label for="rol" class="form-label req">Rol</label>
+          <select class="form-select" id="rol" name="rol"><option value="">Seleccione…</option><option value="ADMINISTRADOR">Administrador</option><option value="VENDEDOR">Vendedor</option><option value="ALMACENERO">Almacenero</option></select></div>
+        <div class="col-md-6"><label for="nombres" class="form-label req">Nombres completos</label><input class="form-control" id="nombres" name="nombres" maxlength="120"></div>
+        <div class="col-md-6"><label for="correo" class="form-label req">Correo electrónico</label><input class="form-control" type="email" id="correo" name="correo" maxlength="120"></div>
+        <div class="col-md-6"><label for="password" class="form-label" id="lblPassword">Contraseña</label><input class="form-control" type="password" id="password" name="password" maxlength="64" autocomplete="new-password"></div>
+        <div class="col-md-6"><label for="confirmarPassword" class="form-label">Confirmar contraseña</label><input class="form-control" type="password" id="confirmarPassword" name="confirmarPassword" maxlength="64" autocomplete="new-password"></div>
+        <div class="col-12"><p class="small text-muted mb-0" id="ayudaPassword"><i class="bi bi-shield-lock me-1"></i>Mínimo 8 caracteres, con mayúscula, minúscula y número. Sin espacios.</p></div>
+      </div></form>
+    </div>
+    <div class="modal-footer"><button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Cancelar</button><button type="button" class="btn btn-accent" id="btnGuardar">Guardar usuario</button></div>
+  </div></div>
+</div>
+
+<th:block th:replace="~{fragments/layout :: scriptsBase}"></th:block>
+<script th:src="@{/js/validaciones.js}"></script>
+<script th:src="@{/js/modal.js}"></script>
+<script th:src="@{/js/usuarios.js}"></script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+.ticket { position: sticky; top: 84px; }
+.total-box { background: var(--mf-purple-50); border: 1px dashed var(--mf-purple-200); border-radius: 12px; padding: .9rem 1rem; }
+.total-monto { font-size: 1.9rem; color: var(--mf-red); line-height: 1; }
+.cant { display: inline-flex; align-items: center; gap: .25rem; }
+.cant input { width: 62px; text-align: center; font-weight: 800; }
+.cant button { width: 32px; height: 32px; padding: 0; }
+.stock-tope { display: block; font-size: .72rem; color: var(--mf-muted); }
+.linea-producto small { display: block; color: var(--mf-muted); }
+
+/* Comprobante */
+#comprobante { font-variant-numeric: tabular-nums; }
+#comprobante .cmp-cab { text-align: center; border-bottom: 2px dashed var(--mf-line); padding-bottom: .8rem; margin-bottom: .8rem; }
+#comprobante .cmp-cab h3 { font-size: 1.15rem; font-weight: 800; color: var(--mf-purple-800); margin: 0; }
+#comprobante table { width: 100%; font-size: .9rem; }
+#comprobante th { border-bottom: 1px solid var(--mf-line); padding: .35rem 0; }
+#comprobante td { padding: .3rem 0; }
+#comprobante .cmp-total { border-top: 2px dashed var(--mf-line); margin-top: .6rem; padding-top: .6rem; display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 800; }
+
+@media print {
+  body * { visibility: hidden; }
+  #comprobante, #comprobante * { visibility: visible; }
+  #comprobante { position: absolute; left: 0; top: 0; width: 100%; padding: 1rem; }
+  .modal-backdrop { display: none !important; }
+}

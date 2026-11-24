@@ -1,0 +1,4 @@
+tr.inactivo td { opacity: .6; }
+.rol-admin { background: var(--mf-red-50); color: var(--mf-red-dark); }
+.usuario-cell { display: flex; align-items: center; gap: .65rem; }
+.usuario-cell .avatar { width: 34px; height: 34px; font-size: .85rem; }

@@ -1,0 +1,4 @@
+td code { background: var(--mf-purple-50); color: var(--mf-purple-800); padding: .15rem .45rem; border-radius: 6px; font-weight: 700; }
+tr.inactivo td { opacity: .55; }
+.stock-col { font-weight: 800; }
+#formProducto .form-label { font-size: .82rem; }

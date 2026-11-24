@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <th:block th:replace="~{fragments/layout :: head('Alertas de reposición')}"></th:block>
+  <link rel="stylesheet" th:href="@{/css/alertas.css}">
+</head>
+<body>
+<div class="app-shell">
+  <th:block th:replace="~{fragments/layout :: sidebar('alertas')}"></th:block>
+  <div class="app-main">
+    <header th:replace="~{fragments/layout :: topbar('Alertas')}"></header>
+    <main class="app-content">
+      <div class="page-head"><p>Productos con stock bajo, próximos a vencer o ya vencidos. <span id="infoDias"></span></p></div>
+      <div class="filtros mb-3" role="group" aria-label="Filtrar alertas">
+        <button type="button" class="filtro active" data-tipo="">Todas <b id="nTodas">0</b></button>
+        <button type="button" class="filtro" data-tipo="VENCIDO">Vencidos <b id="nVencido">0</b></button>
+        <button type="button" class="filtro" data-tipo="STOCK_BAJO">Stock bajo <b id="nStock">0</b></button>
+        <button type="button" class="filtro" data-tipo="POR_VENCER">Por vencer <b id="nPorVencer">0</b></button>
+      </div>
+      <div class="panel panel-flush">
+        <div class="table-responsive">
+          <table class="table table-mf">
+            <thead><tr><th>Alerta</th><th>Producto</th><th class="num">Stock</th><th class="num">Mínimo</th><th>Vence</th><th>Proveedor habitual</th><th class="text-end">Acción</th></tr></thead>
+            <tbody id="tbody"><tr><td colspan="7" class="vacio">Cargando…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+<th:block th:replace="~{fragments/layout :: scriptsBase}"></th:block>
+<script th:src="@{/js/modal.js}"></script>
+<script th:src="@{/js/alertas.js}"></script>
+</body>
+</html>
