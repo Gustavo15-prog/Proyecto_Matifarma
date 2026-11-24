@@ -1,19 +1,22 @@
-# Botica Matifarma — Sistema de gestión de inventario
+# Botica Matifarma
 
-Java 17 · Spring Boot 3.3.5 · Maven · Thymeleaf · Spring Security · JDBC (patrón DAO) · SQL Server · Bootstrap 5.3.3
+Sistema web para llevar el inventario, las ventas y los vencimientos de la botica. Está hecho con Java 17, Spring Boot 3.3.5, Maven, Thymeleaf, Spring Security y SQL Server (acceso a datos con JDBC y patrón DAO). La interfaz usa Bootstrap 5.3.3.
 
-## 1. Requisitos
+## Qué se necesita
+
 - JDK 17 o superior
-- Apache Maven 3.9+
-- SQL Server 2019+ (o Express) con autenticación SQL habilitada
-- Conexión a internet al ejecutar (Bootstrap, Bootstrap Icons y la tipografía se cargan por CDN)
+- Maven 3.9 o superior
+- SQL Server 2019 (o Express) con la autenticación SQL activada
+- Conexión a internet al ejecutar, porque Bootstrap, los iconos y la tipografía se cargan desde un CDN
 
-## 2. Base de datos
-1. Abra `database/01_matifarma.sql` en SSMS / Azure Data Studio y ejecútelo completo (crea la BD `matifarma`, tablas, restricciones y categorías).
-2. *(Opcional)* Ejecute `database/02_datos_demo.sql` para cargar 2 proveedores y 8 productos de ejemplo (con stock bajo y próximos a vencer para ver las alertas).
+## Base de datos
 
-## 3. Conexión
-Edite `src/main/resources/application.properties` o defina variables de entorno:
+1. Abrir `database/01_matifarma.sql` en SSMS o Azure Data Studio y ejecutarlo completo. Crea la base `matifarma`, las tablas, las restricciones y las categorías iniciales.
+2. Si se quieren datos de prueba, ejecutar también `database/02_datos_demo.sql`. Carga 2 proveedores y 8 productos, algunos con stock bajo o a punto de vencer, para ver cómo funcionan las alertas.
+
+## Configuración
+
+Los valores se pueden cambiar en `src/main/resources/application.properties` o con variables de entorno:
 
 | Variable | Valor por defecto |
 |---|---|
@@ -21,56 +24,71 @@ Edite `src/main/resources/application.properties` o defina variables de entorno:
 | `DB_PORT` | `1433` |
 | `DB_NAME` | `matifarma` |
 | `DB_USER` | `sa` |
-| `DB_PASSWORD` | **obligatoria** (sin valor por defecto) |
-| `DB_TRUST_CERT` | `true` (certificado autofirmado local; en producción use `false` con un certificado válido) |
-| `ADMIN_PASSWORD` | opcional; si no se define se genera una aleatoria |
-| `THYMELEAF_CACHE` | `true` (use `false` solo mientras edita plantillas) |
+| `DB_PASSWORD` | no tiene, hay que definirla |
+| `DB_TRUST_CERT` | `true` (sirve para el certificado autofirmado de un SQL Server local; en producción usar `false` con un certificado válido) |
+| `ADMIN_PASSWORD` | opcional; si no se define, se genera una al azar |
+| `THYMELEAF_CACHE` | `true` (ponerla en `false` solo mientras se editan las plantillas) |
 
-Ejemplo: `DB_PASSWORD='su-clave' mvn spring-boot:run`
+En Linux o macOS:
 
-## 4. Compilar y ejecutar
+```bash
+DB_PASSWORD='mi-clave' mvn spring-boot:run
+```
+
+En PowerShell:
+
+```powershell
+$env:DB_PASSWORD = "mi-clave"
+mvn spring-boot:run
+```
+
+## Compilar y ejecutar
+
 ```bash
 mvn clean install
 mvn spring-boot:run
 ```
-Abra http://localhost:8080
 
-**Primer ingreso:** la primera vez que arranca (tabla `empleado` vacía) se crea el administrador
-`admin`. Si definió `ADMIN_PASSWORD` se usa esa clave; si no, se genera una contraseña temporal
-y se muestra **una sola vez en el log** de arranque. Cámbiela desde **Usuarios**.
+La aplicación queda en http://localhost:8080.
 
-## 5. Roles y menú
-| Rol | Opciones visibles |
+La primera vez que arranca, si la tabla `empleado` está vacía, se crea el usuario `admin`. Si se definió `ADMIN_PASSWORD`, esa es su clave. Si no, el sistema genera una temporal y la escribe en el log de arranque una sola vez, así que hay que copiarla de ahí. Conviene cambiarla enseguida desde el módulo Usuarios.
+
+## Roles
+
+| Rol | Qué ve en el menú |
 |---|---|
-| Administrador | Todas |
-| Vendedor | Dashboard, Ventas, Consultar stock |
-| Almacenero | Dashboard, Inventario, Consultar stock |
+| Administrador | Todo |
+| Vendedor | Dashboard, Ventas y Consultar stock |
+| Almacenero | Dashboard, Inventario y Consultar stock |
 
-Los permisos se aplican en el servidor (`config/SecurityConfig.java`), no solo ocultando el menú. El precio de compra solo lo ve el Administrador.
+Los permisos se controlan en el servidor (`config/SecurityConfig.java`), no solo escondiendo opciones del menú. El precio de compra únicamente lo ve el administrador.
 
-## 6. Estructura
+## Estructura del proyecto
+
 ```
 src/main/java/com/matifarma/
-  controller/  PaginaController (vistas) + *ApiController (JSON)
-  service/     reglas de negocio y validaciones del servidor
-  dao/         acceso a SQL Server con JdbcTemplate
-  model/       records: entidades, DTO y validaciones (Bean Validation)
-  config/      seguridad, login, sesión, administrador inicial
-  exception/   errores de negocio y respuesta JSON uniforme
+  controller/   PaginaController (vistas) y los *ApiController (JSON)
+  service/      reglas de negocio y validaciones del servidor
+  dao/          consultas a SQL Server con JdbcTemplate
+  model/        records con los datos y sus validaciones (Bean Validation)
+  config/       seguridad, login, sesión y creación del administrador
+  exception/    errores de negocio y respuesta JSON de error
 src/main/resources/
-  templates/   una página HTML por módulo + fragments/layout.html (sidebar, topbar, head)
-  static/css/  global.css + un CSS por página
-  static/js/   un JS por página + api, validaciones, notificaciones, modal, sidebar, buscador-productos
-database/      scripts SQL Server
+  templates/    una página HTML por módulo, más fragments/layout.html
+  static/css/   global.css y un CSS por página
+  static/js/    un JS por página, más los compartidos
+database/       scripts de SQL Server
 ```
-Archivos que se agregaron a la estructura pedida: `templates/fragments/layout.html` (fragmentos compartidos), `static/js/api.js`, `buscador-productos.js`, `notificaciones.js`, `modal.js`, `sidebar.js`, `static/img/logo.svg`.
 
-## 7. Cómo se cumplen las validaciones clave
-- **Doble envío:** el botón se deshabilita al enviar y cada ingreso/salida/venta lleva un token único (columna `UNIQUE` en BD). Un reenvío se rechaza con 409.
-- **Stock nunca negativo:** el descuento es una sola sentencia atómica (`UPDATE ... WHERE cantidad >= ?`) más un `CHECK (cantidad >= 0)`.
-- **Ventas:** el servidor ignora los precios del navegador y recalcula subtotal y total; venta + detalle + stock + movimiento van en una transacción.
-- **Ingreso con producto vencido:** no suma al stock y queda registrado como *no conforme* (RF09).
-- **Sesiones:** en cada petición se revalida que el empleado siga activo y con el mismo rol (`EstadoSesionFilter`); desactivarlo o cambiarle el rol surte efecto de inmediato.
-- **Contraseñas:** BCrypt (costo 12). Bloqueo de 15 min tras 5 intentos fallidos (`matifarma.seguridad.*`).
-- **CSRF** activo en todos los formularios y llamadas `fetch`.
-- **Alertas:** stock ≤ mínimo, vencidos con stock y por vencer en 30 días (`matifarma.alertas.dias-vencimiento`).
+Además de lo que pedía la estructura original, se agregaron `templates/fragments/layout.html` (sidebar, barra superior y cabecera compartidos), `static/img/logo.svg` y estos scripts compartidos en `static/js/`: `api.js`, `buscador-productos.js`, `notificaciones.js`, `modal.js` y `sidebar.js`.
+
+## Cosas que conviene saber
+
+- Doble envío: al enviar un formulario el botón se deshabilita, y cada ingreso, salida o venta lleva un token único que la base de datos no deja repetir. Si llega el mismo envío dos veces, el segundo se rechaza con un error 409.
+- Stock: nunca queda en negativo. El descuento es una sola sentencia `UPDATE ... WHERE cantidad >= ?`, y además la tabla tiene un `CHECK (cantidad >= 0)`.
+- Ventas: el servidor no confía en los precios que manda el navegador. Los toma de la base y recalcula subtotal y total. La venta, su detalle, el descuento de stock y el movimiento se guardan en una sola transacción.
+- Ingresos con producto vencido: esas unidades no se suman al stock y el ingreso queda marcado como no conforme.
+- Sesiones: en cada petición se comprueba que el empleado siga activo y con el mismo rol (`EstadoSesionFilter`). Si un administrador desactiva a alguien o le cambia el rol, el cambio se aplica en el acto.
+- Contraseñas: se guardan con BCrypt (costo 12). Tras 5 intentos fallidos la cuenta se bloquea 15 minutos; ambos valores se ajustan en `matifarma.seguridad.*`.
+- CSRF está activo en los formularios y en las llamadas `fetch`.
+- Alertas: se generan por stock igual o menor al mínimo, por productos vencidos que aún tienen stock y por productos que vencen dentro de los próximos 30 días (`matifarma.alertas.dias-vencimiento`).
